@@ -31,7 +31,7 @@ export interface AlumniProfile {
 
   // Current
   current_company?: string;
-  current_role?: string;
+  current_designation?: string;
   current_city?: string;
   field: string;
   specialization?: string;

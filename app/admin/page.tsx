@@ -95,7 +95,7 @@ export default function AdminPage() {
     const rows = filtered.map((a) => [
       a.full_name, a.email, a.phone ?? "", a.status ?? "",
       a.field, a.college_name, a.degree,
-      a.current_company ?? "", a.current_role ?? "", a.current_city ?? "",
+      a.current_company ?? "", a.current_designation ?? "", a.current_city ?? "",
       a.exam_cleared ?? "", a.rank_or_result ?? "",
       a.vedantu_study_years, a.vedantu_classes,
       a.available_for_mentoring ? "Yes" : "No",
@@ -497,7 +497,7 @@ export default function AdminPage() {
                   title: "Current Status",
                   rows: [
                     ["Field", selected.field],
-                    ["Role", selected.current_role],
+                    ["Role", selected.current_designation],
                     ["Company", selected.current_company],
                     ["City", selected.current_city],
                     ["Specialization", selected.specialization],
