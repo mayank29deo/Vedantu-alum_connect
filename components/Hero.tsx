@@ -122,9 +122,9 @@ export default function Hero() {
           </div>
 
           {/* Right — visual card stack */}
-          <div className="hidden lg:block relative">
+          <div className="hidden lg:flex flex-col gap-3">
             {/* Main card */}
-            <div className="relative bg-white rounded-3xl shadow-2xl shadow-orange-100/80 p-6 border border-orange-100 z-10 ml-8">
+            <div className="relative bg-white rounded-3xl shadow-2xl shadow-orange-100/80 p-6 border border-orange-100">
               {/* Card header */}
               <div className="flex items-center gap-4 mb-5">
                 <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-400 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
@@ -176,39 +176,27 @@ export default function Hero() {
               </button>
             </div>
 
-            {/* Floating notification card */}
-            <div className="absolute -top-8 -right-6 bg-white rounded-2xl shadow-xl p-4 flex items-center gap-3 z-20 border border-orange-50 animate-float">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white text-xs font-bold">
-                🎉
+            {/* Sub-cards row */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-white rounded-2xl border border-orange-50 shadow-md p-4 flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-base flex-shrink-0">
+                  🎉
+                </div>
+                <div className="min-w-0">
+                  <p className="text-xs font-semibold text-gray-800 truncate">Session booked!</p>
+                  <p className="text-[10px] text-gray-400 truncate">Arjun × Siddharth • Today 6 PM</p>
+                </div>
               </div>
-              <div>
-                <p className="text-xs font-semibold text-gray-800">
-                  Session booked!
-                </p>
-                <p className="text-[10px] text-gray-400">
-                  Arjun × Siddharth • Today 6 PM
-                </p>
-              </div>
-            </div>
-
-            {/* Floating result card */}
-            <div className="absolute -bottom-6 -left-4 bg-white rounded-2xl shadow-xl p-4 flex items-center gap-3 z-20 border border-orange-50">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-400 to-orange-500 flex items-center justify-center">
-                <span className="text-lg">🏆</span>
-              </div>
-              <div>
-                <p className="text-xs font-semibold text-gray-800">
-                  JEE Advanced AIR 127
-                </p>
-                <p className="text-[10px] text-gray-400">
-                  Mentored by Dev Patel
-                </p>
+              <div className="bg-white rounded-2xl border border-orange-50 shadow-md p-4 flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-orange-400 to-orange-500 flex items-center justify-center text-base flex-shrink-0">
+                  🏆
+                </div>
+                <div className="min-w-0">
+                  <p className="text-xs font-semibold text-gray-800 truncate">JEE Advanced AIR 127</p>
+                  <p className="text-[10px] text-gray-400 truncate">Mentored by Dev Patel</p>
+                </div>
               </div>
             </div>
-
-            {/* Background card (stack effect) */}
-            <div className="absolute inset-4 bg-orange-50 rounded-3xl -z-10 rotate-2" />
-            <div className="absolute inset-6 bg-orange-100/50 rounded-3xl -z-20 rotate-6" />
           </div>
         </div>
       </div>
