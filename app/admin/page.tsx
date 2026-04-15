@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { supabase, AlumniProfile, AlumniStatus } from "@/lib/supabase";
+import { getSupabase, AlumniProfile, AlumniStatus } from "@/lib/supabase";
 import {
   CheckCircle,
   XCircle,
@@ -45,7 +45,9 @@ export default function AdminPage() {
 
   const fetchAlumni = useCallback(async () => {
     setLoading(true);
-    const { data, error } = await supabase
+    const client = getSupabase();
+    if (!client) { setLoading(false); return; }
+    const { data, error } = await client
       .from("alumni_profiles")
       .select("*")
       .order("created_at", { ascending: false });
@@ -68,7 +70,9 @@ export default function AdminPage() {
 
   const updateStatus = async (id: string, status: AlumniStatus) => {
     setActionLoading(id + status);
-    const { error } = await supabase
+    const client = getSupabase();
+    if (!client) { setActionLoading(null); return; }
+    const { error } = await client
       .from("alumni_profiles")
       .update({
         status,

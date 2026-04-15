@@ -1,9 +1,16 @@
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+export function getSupabase() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+  if (!url.startsWith("http")) {
+    console.warn("Supabase not configured — set NEXT_PUBLIC_SUPABASE_URL in .env.local");
+    return null as unknown as ReturnType<typeof createClient>;
+  }
+
+  return createClient(url, key);
+}
 
 export type AlumniStatus = "pending" | "approved" | "rejected";
 
@@ -13,39 +20,32 @@ export interface AlumniProfile {
   status?: AlumniStatus;
   reviewer_note?: string;
 
-  // Personal
   full_name: string;
   email: string;
   phone?: string;
   profile_photo_url?: string;
 
-  // Vedantu journey
   vedantu_study_years: string;
   vedantu_classes: string;
   vedantu_subjects?: string[];
 
-  // Education
   college_name: string;
   degree: string;
   college_year_of_passing?: number;
 
-  // Current
   current_company?: string;
   current_designation?: string;
   current_city?: string;
   field: string;
   specialization?: string;
 
-  // Achievement
   exam_cleared?: string;
   rank_or_result?: string;
 
-  // Profile
   bio?: string;
   linkedin_url?: string;
   tags?: string[];
 
-  // Mentorship
   available_for_mentoring?: boolean;
   session_preference?: "1on1" | "group" | "both";
   preferred_session_duration?: number;
@@ -58,27 +58,29 @@ export async function submitAlumniProfile(
   photoFile?: File
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    const client = getSupabase();
+    if (!client) throw new Error("Supabase not configured.");
+
     let profile_photo_url: string | undefined;
 
-    // Upload photo first if provided
     if (photoFile) {
       const ext = photoFile.name.split(".").pop();
       const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
 
-      const { error: uploadError } = await supabase.storage
+      const { error: uploadError } = await client.storage
         .from("alumni-photos")
         .upload(filename, photoFile, { upsert: false });
 
       if (uploadError) throw new Error("Photo upload failed: " + uploadError.message);
 
-      const { data: urlData } = supabase.storage
+      const { data: urlData } = client.storage
         .from("alumni-photos")
         .getPublicUrl(filename);
 
       profile_photo_url = urlData.publicUrl;
     }
 
-    const { error } = await supabase
+    const { error } = await client
       .from("alumni_profiles")
       .insert({ ...data, profile_photo_url, status: "pending" });
 
@@ -89,11 +91,9 @@ export async function submitAlumniProfile(
   }
 }
 
-export async function fetchAllAlumni(serviceKey?: string) {
-  // For admin: use service key to bypass RLS
-  const client = serviceKey
-    ? createClient(supabaseUrl, serviceKey)
-    : supabase;
+export async function fetchAllAlumni() {
+  const client = getSupabase();
+  if (!client) return { data: null, error: null };
 
   const { data, error } = await client
     .from("alumni_profiles")
@@ -108,7 +108,10 @@ export async function updateAlumniStatus(
   status: AlumniStatus,
   reviewer_note?: string
 ) {
-  const { error } = await supabase
+  const client = getSupabase();
+  if (!client) return { error: null };
+
+  const { error } = await client
     .from("alumni_profiles")
     .update({ status, reviewer_note, reviewed_at: new Date().toISOString() })
     .eq("id", id);
